@@ -372,7 +372,7 @@ exports.getUserDetails = async (req, res) => {
         .then((success) => {
             return res.json({
                 success: true,
-                message: `money added in user wallet`,
+                message: `user details`,
                 data: success
             })
         })
