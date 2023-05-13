@@ -110,31 +110,31 @@ exports.createUser = async (req, res) => {
         })
 }
 
-exports.deleteUser  = async(req,res)=>{
-    const {usrId} = req.params
+exports.deleteUser = async (req, res) => {
+    const { usrId } = req.params
 
-    if(!userId){
+    if (!userId) {
         return res.json({
-            status:false,
-            message:"please provide userId"
+            status: false,
+            message: "please provide userId"
         })
     }
 
     await userModel.findOneAndDelete({
-        _id:mongoose.Types.ObjectId(userId)
+        _id: mongoose.Types.ObjectId(userId)
     })
-    .then((success)=>{
-        return res.json({
-            status:true,
-            message:"user account deleted successfully"
+        .then((success) => {
+            return res.json({
+                status: true,
+                message: "user account deleted successfully"
+            })
         })
-    })
-    .catch((error)=>{
-        return res.json({
-            status:false,
-            message:"something went wrong"
+        .catch((error) => {
+            return res.json({
+                status: false,
+                message: "something went wrong"
+            })
         })
-    })
 }
 
 exports.sendOtp = async (req, res) => {
@@ -191,7 +191,8 @@ exports.verifyOtp = async (req, res) => {
 }
 
 exports.isUserExist = async (req, res) => {
-    const mobile = req.params.mobile
+    const { mobile, email } = req.body
+    console.log(mobile)
 
     if (!mobile) {
         return res.json({
@@ -200,14 +201,24 @@ exports.isUserExist = async (req, res) => {
         })
     }
 
+    if (!email) {
+        return res.json({
+            status: false,
+            message: "please enter email"
+        })
+    }
+
     const isUserExist = await userModel.findOne({
-        mobile: mobile
+        $or: [
+            { mobile: mobile },
+            { email: email }
+        ]
     })
 
     if (!isUserExist) {
         return res.json({
             status: false,
-            message: "user not present with this mobile"
+            message: "user not present with this details"
         })
     }
     else {
